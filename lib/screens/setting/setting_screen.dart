@@ -9,7 +9,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<UserProvider>();
+    // final user = context.watch<UserProvider>();
     return Scaffold(
       appBar: AppBar(title: const Text('настройки')),
     );

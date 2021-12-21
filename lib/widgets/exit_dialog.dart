@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ExitAlertDialog extends StatelessWidget {
+  const ExitAlertDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Exit?'),
+      title: const Text('Exit?'),
       actions: <Widget>[
         TextButton(
           onPressed: () {
@@ -21,7 +23,7 @@ class ExitAlertDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop(true);
           },
-          child: Text('Exit'),
+          child: const Text('Exit'),
         ),
       ],
     );

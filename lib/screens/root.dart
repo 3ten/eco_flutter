@@ -25,7 +25,7 @@ class Root extends StatelessWidget {
                     entries.value.icon,
                     color: provider.currentTabIndex == entries.key
                         ? const Color(0xFF7FA8D3)
-                        : const Color(0xFFDFE1E7),
+                        : const Color(0xFF9A9A9A),
                   ),
                 ),
                 label: entries.value.title,
@@ -55,36 +55,30 @@ class Root extends StatelessWidget {
               decoration: const BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Color.fromRGBO(99, 99, 99, 0.12),
+                    color: Color.fromRGBO(99, 99, 99, 0.02),
                     spreadRadius: 4,
                     blurRadius: 4,
                     offset: Offset(0, -1),
                   ),
                 ],
               ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(15),
-                  topLeft: Radius.circular(15),
+              child: BottomNavigationBar(
+                items: bottomNavigationBarItems,
+                selectedFontSize: 10,
+                unselectedFontSize: 10,
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+                selectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
                 ),
-                child: BottomNavigationBar(
-                  items: bottomNavigationBarItems,
-                  selectedFontSize: 10,
-                  unselectedFontSize: 10,
-                  showSelectedLabels: true,
-                  showUnselectedLabels: true,
-                  selectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  unselectedItemColor: const Color(0xFFDFE1E7),
-                  selectedItemColor: const Color(0xFF7FA8D3),
-                  type: BottomNavigationBarType.fixed,
-                  currentIndex: provider.currentTabIndex,
-                  onTap: provider.setTab,
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.w600,
                 ),
+                unselectedItemColor: const Color(0xFF9A9A9A),
+                selectedItemColor: const Color(0xFF7FA8D3),
+                type: BottomNavigationBarType.fixed,
+                currentIndex: provider.currentTabIndex,
+                onTap: provider.setTab,
               ),
             ),
           ),

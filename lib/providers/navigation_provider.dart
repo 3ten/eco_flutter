@@ -38,7 +38,7 @@ class NavigationProvider extends ChangeNotifier {
 
   final Screen _notFoundScreen = Screen(
     title: 'First',
-    icon: 'assets/icons/tab/home.svg',
+    icon: 'assets/icons/tab/checklist.svg',
     child: const CheckListScreen(),
     initialRoute: CheckListScreen.route,
     navigatorState: GlobalKey<NavigatorState>(),
@@ -89,7 +89,7 @@ class NavigationProvider extends ChangeNotifier {
     ),
     THIRD_SCREEN: Screen(
       title: 'Отчеты',
-      icon: 'assets/icons/tab/application.svg',
+      icon: 'assets/icons/tab/report.svg',
       child: const ReportScreen(),
       initialRoute: ReportScreen.route,
       navigatorState: GlobalKey<NavigatorState>(),
@@ -106,7 +106,7 @@ class NavigationProvider extends ChangeNotifier {
     ),
     FOURTH_SCREEN: Screen(
       title: 'Инфо',
-      icon: 'assets/icons/tab/message.svg',
+      icon: 'assets/icons/tab/info.svg',
       child: const InfoScreen(),
       initialRoute: InfoScreen.route,
       navigatorState: GlobalKey<NavigatorState>(),
@@ -121,7 +121,7 @@ class NavigationProvider extends ChangeNotifier {
     ),
     FIFTH_SCREEN: Screen(
       title: 'Настройки',
-      icon: 'assets/icons/tab/profile.svg',
+      icon: 'assets/icons/tab/settings.svg',
       child: const SettingScreen(),
       initialRoute: SettingScreen.route,
       navigatorState: GlobalKey<NavigatorState>(),
@@ -178,7 +178,7 @@ class NavigationProvider extends ChangeNotifier {
       } else {
         return await showDialog(
           context: context,
-          builder: (context) => ExitAlertDialog(),
+          builder: (context) => const ExitAlertDialog(),
         );
       }
     }
