@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:eco/api/api_manager.dart';
 import 'package:eco/models/checklist_model.dart';
+import 'package:eco/models/super_model.dart';
 import 'package:flutter/material.dart';
 
 class CheckListProvider extends ChangeNotifier {
@@ -15,17 +16,19 @@ class CheckListProvider extends ChangeNotifier {
 
   getTitle() async {
     _title = await _apiManager.get(
-        url: '/checklist/title', param: {}, responseType: ResponseType.text);
+        url: 'checklist/title', param: {}, responseType: ResponseType.text);
     notifyListeners();
   }
 
   sendEmail(email) async {
-    _apiManager.post(url: 'checklist/email',param:{"email": email, "checks":_checklist.toJson() });
+    SuperModel superModel = SuperModel(checklist: _checklist);
+
+    _apiManager.post(url: 'checklist/email',param:{"email": email, "checks":superModel.toJson()['checklist'] });
   }
 
   getChecklist() async {
     var data = await _apiManager.get(
-        url: '/checklist', param: {}, responseType: ResponseType.array);
+        url: 'checklist', param: {}, responseType: ResponseType.array);
 
     for (var item in data) {
       print('получаем тут-->');

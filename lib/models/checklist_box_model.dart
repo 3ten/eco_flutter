@@ -9,14 +9,8 @@ class ChecklistBox {
   String label;
   bool isSelected;
 
-  factory ChecklistBox.fromJson(Map<String, dynamic> obj) {
+  factory ChecklistBox.fromJson(Map<String, dynamic> json) =>
+      _$ChecklistBoxFromJson(json);
 
-    return ChecklistBox(
-      label: (obj['label']).toString(),
-      isSelected:obj['isSelected']??false,
-    );
-  }
-
-
+  Map<String, dynamic> toJson() => _$ChecklistBoxToJson(this);
 }
-

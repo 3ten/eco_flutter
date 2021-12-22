@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'checklist_box_model.dart';
+
 part 'checklist_model.g.dart';
 
 
@@ -15,17 +17,7 @@ class Checklist {
 
   Map<String, dynamic> toJson() => _$ChecklistToJson(this);
 
-
-  factory Checklist.fromJson(Map<String, dynamic> obj) {
-    var _boxes = [];
-    print(obj['boxes'].runtimeType);
-    for (var item in obj['boxes']) {
-      _boxes.add(ChecklistBox.fromJson(item));
-    }
-    return Checklist(
-        title: (obj['title']).toString(),
-        boxes: _boxes,
-        isSelected:obj['isSelected']??false,
-    );
-  }
+  @override
+  factory Checklist.fromJson(Map<String, dynamic> json)  =>
+      _$ChecklistFromJson(json);
 }

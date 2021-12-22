@@ -13,12 +13,34 @@ class ResponseType {
 }
 
 class APIManager {
-  final String _defaultUrl = "http://188.225.18.212";
+  final String _defaultUrl = "http://188.225.18.212/";
 
   Future<dynamic> post(
       {required String url,
       Map? param,
-        List? arrayParams,
+      List? arrayParams,
+      String responseType = ResponseType.json}) async {
+    print("Calling API: $url");
+    // print("Calling parameters: $param");
+
+    dynamic responseJson;
+    try {
+      var uri = Uri.parse(_defaultUrl + url);
+      print(json.encode(param));
+      final response = await http.post(uri, headers: {"Content-Type": "application/json"}, body: json.encode(param));
+      responseJson = _response(response, responseType);
+    } catch (e) {
+      print(e);
+      if (e is SocketException) {
+        throw FetchDataException('No Internet connection');
+      }
+    }
+    return responseJson;
+  }
+
+  Future<dynamic> get(
+      {required String url,
+      Map? param,
       String responseType = ResponseType.json}) async {
     print("Calling API: $url");
     print("Calling parameters: $param");
@@ -26,7 +48,7 @@ class APIManager {
     dynamic responseJson;
     try {
       var uri = Uri.parse(_defaultUrl + url);
-      final response = await http.post(uri, body: param??arrayParams);
+      final response = await http.get(uri);
       responseJson = _response(response, responseType);
     } on SocketException {
       throw FetchDataException('No Internet connection');
@@ -34,26 +56,10 @@ class APIManager {
     return responseJson;
   }
 
-  Future<dynamic> get( {required String url,
-    Map? param,
-    String responseType = ResponseType.json}) async {
-    print("Calling API: $url");
-    print("Calling parameters: $param");
-
-    dynamic responseJson;
-    try {
-      var uri = Uri.parse(_defaultUrl + url);
-      final response = await http.get(uri);
-      responseJson = _response(response,responseType);
-    } on SocketException {
-      throw FetchDataException('No Internet connection');
-    }
-    return responseJson;
-  }
-
-  Future<dynamic> delete( {required String url,
-    Map? param,
-    String responseType = ResponseType.json}) async {
+  Future<dynamic> delete(
+      {required String url,
+      Map? param,
+      String responseType = ResponseType.json}) async {
     print("Calling API: $url");
     print("Calling parameters: $param");
 
@@ -61,7 +67,7 @@ class APIManager {
     try {
       var uri = Uri.parse(_defaultUrl + url);
       final response = await http.post(uri, body: param);
-      responseJson = _response(response,responseType);
+      responseJson = _response(response, responseType);
     } on SocketException {
       throw FetchDataException('No Internet connection');
     }
