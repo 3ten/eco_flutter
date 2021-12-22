@@ -11,19 +11,37 @@ class UserProvider extends ChangeNotifier {
 
   List<CityModel> _cities = [];
 
+  bool _isAuth = false;
+
   String get city => _city;
 
   List<CityModel> get cities => _cities;
+
+  bool get isAuth => _isAuth;
+
+  void login() {
+    print('lol');
+    _isAuth = true;
+    notifyListeners();
+  }
+
+  void logout() {
+    _isAuth = false;
+    notifyListeners();
+  }
+
+  void getToken() {
+    _isAuth = true;
+    notifyListeners();
+  }
 
   void getCity(city) async {
     print(city);
     var cities = await _apiManager.get(url: 'city?q=$city');
     // print();
     print('1');
-    _cities = SuperModel.fromJson({"cities":cities}).cities ?? [];
+    _cities = SuperModel.fromJson({"cities": cities}).cities ?? [];
     _city = city;
     notifyListeners();
   }
-
-
 }

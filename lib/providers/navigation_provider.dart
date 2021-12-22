@@ -34,6 +34,8 @@ class NavigationProvider extends ChangeNotifier {
       default:
         return MaterialPageRoute(builder: (_) => const Root());
     }
+
+
   }
 
   final Screen _notFoundScreen = Screen(
@@ -54,7 +56,7 @@ class NavigationProvider extends ChangeNotifier {
     scrollController: ScrollController(),
   );
 
-  final Map<int, Screen> _screens = {
+  Map<int, Screen> _screens = {
     FIRST_SCREEN: Screen(
       title: 'Чек-лист',
       icon: 'assets/icons/tab/checklist.svg',
