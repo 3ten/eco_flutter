@@ -32,6 +32,36 @@ class _CheckListScreenState extends State<CheckListScreen> {
     checklist.getTitle();
   }
 
+
+
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Чек-лист'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Чек-лист отправлен вам на email'),
+
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ок'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final checklist = context.watch<CheckListProvider>();
@@ -62,46 +92,80 @@ class _CheckListScreenState extends State<CheckListScreen> {
                   child: Text(checklist.title)),
               for (var i = 0; i < checklist.checklist.length; i++)
                 ChecklistCollapsed(item: checklist.checklist[i], i: i),
-              IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 20, right: 10),
-                        margin: const EdgeInsets.only(bottom: 50,top: 10),
-                        child: TextField(
-                          controller: emailController,
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            border: OutlineInputBorder(),
-                            labelText: 'Email',
-                            contentPadding: EdgeInsets.all(10),
+              if (!user.isAuth)
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 20, right: 10),
+                          margin: const EdgeInsets.only(bottom: 50, top: 10),
+                          child: TextField(
+                            controller: emailController,
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              border: OutlineInputBorder(),
+                              labelText: 'Email',
+                              contentPadding: EdgeInsets.all(10),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 50,right: 20,top:10),
-                      height: 1,
-                      child: OutlinedButton(
-
-                        onPressed: () {
-                          context.read<CheckListProvider>().sendEmail(emailController.text);
-                        },
-                        child: SizedBox(
+                      Container(
+                        padding: const EdgeInsets.only(
+                            bottom: 50, right: 20, top: 10),
+                        height: 1,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            context
+                                .read<CheckListProvider>()
+                                .sendEmail(emailController.text);
+                            _showMyDialog();
+                          },
+                          child: SizedBox(
+                            width: 50,
+                            child: SvgPicture.asset(
+                              'assets/icons/mail.svg',
+                              color: const Color(0xFF7B7B7B),
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Container(
+                  padding:
+                      const EdgeInsets.only(left: 20, right: 20, bottom: 15),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      context
+                          .read<CheckListProvider>()
+                          .sendEmail(user.user?.email?? "");
+                      _showMyDialog();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Отправить на почту'),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        SizedBox(
                           width: 50,
                           child: SvgPicture.asset(
                             'assets/icons/mail.svg',
                             color: const Color(0xFF7B7B7B),
-                            fit:BoxFit.contain,
+                            fit: BoxFit.contain,
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              )
+                  ),
+                )
             ],
           ),
         ),

@@ -16,9 +16,40 @@ class ProjectScreen extends StatefulWidget {
 }
 
 class _ProjectScreenState extends State<ProjectScreen> {
-
   String? city;
+  DateTime? date;
+  int? rating;
 
+  String getRating(ReportModel item) {
+    if (item.criteria == null) return "0.0";
+    num ratingSum = item.criteria
+            ?.fold(0, (num? sum, value) => (sum ?? 0) + (value.rating ?? 0)) ??
+        0;
+    return (ratingSum / (item.criteria?.length ?? 1)).toStringAsFixed(1);
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) {
+      return "";
+    }
+    return "${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  Future<DateTime?> showCalendar(context) async => showDatePicker(
+        helpText: 'Выберете дату',
+        context: context,
+        locale: const Locale('ru', 'RU'),
+        initialDate: date ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2025),
+      );
+
+  setRating(int? value, BuildContext context) {
+    setState(() {
+      rating = value;
+    });
+    Navigator.pop(context);
+  }
 
   @override
   void initState() {
@@ -28,6 +59,24 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   fetch() {
     context.read<ReportProvider>().getProjects();
+  }
+
+  List<ReportModel> _filterProjects(List<ReportModel> projects) {
+    return projects.where((el) {
+      var flag = true;
+      if (city != null) {
+        if (el.city != city) flag = false;
+      }
+      if (date != null && el.dateStart != null && el.dateEnd != null) {
+        if (el.dateStart!.isBefore(date!) && el.dateEnd!.isAfter(date!))
+          flag = false;
+      }
+      if (rating != null) {
+        print(el.rating);
+        if (num.parse(getRating(el)) <= (rating ?? 1)) flag = false;
+      }
+      return flag;
+    }).toList();
   }
 
   @override
@@ -52,40 +101,96 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => CitySelect(
-                            setCity: (city) {
-                              print(city);
+                            setCity: (value) {
+                              setState(() {
+                                city = value;
+                              });
                             },
                           ),
                         ),
                       );
                     },
-                    child: const Card(
+                    child: Card(
                       child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('г. Новосибирск'),
+                        padding: const EdgeInsets.all(8),
+                        child: Text(city == null ? 'Город' : 'г. $city'),
                       ),
                     ),
                   ),
                   GestureDetector(
-                    child: const Card(
+                    onTap: () {
+                      showCalendar(context).then((value) {
+                        if (value == null) return;
+                        setState(() {
+                          date = value;
+                        });
+                      });
+                    },
+                    child: Card(
                       child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('2001-10-12'),
+                        padding: const EdgeInsets.all(8),
+                        child: Text(date == null ? 'Дата' : _formatDate(date)),
                       ),
                     ),
                   ),
                   GestureDetector(
-                    child: const Card(
+                    onTap: () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            contentPadding: EdgeInsets.zero,
+                            title: const Text('Выберите рейтинг'),
+                            content: SingleChildScrollView(
+                              child: ListBody(
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () => setRating(null, context),
+                                    child: const ListTile(
+                                      title:  Text("Сбросить"),
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () => setRating(1, context),
+                                    child: const ListTile(
+                                      title:  Text(">1"),
+                                    ),
+                                  ),
+                                  ListTile(
+                                    onTap: () => setRating(2, context),
+                                    title: const Text(">2"),
+                                  ),
+                                  ListTile(
+                                    onTap: () => setRating(3, context),
+                                    title: const Text(">3"),
+                                  ),
+                                  ListTile(
+                                    onTap: () => setRating(4, context),
+                                    title: const Text(">4"),
+                                  ),
+                                  ListTile(
+                                    onTap: () => setRating(5, context),
+                                    title: const Text("=5"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Card(
                       child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text('Рейтинг 5'),
+                        padding: const EdgeInsets.all(8),
+                        child: Text('Рейтинг ' +
+                            (rating == null ? "" : rating.toString())),
                       ),
                     ),
                   )
                 ],
               ),
             ),
-            for (var item in reportProvider.projects)
+            for (var item in _filterProjects(reportProvider.projects))
               ProjectCard(
                 onTap: () {
                   context.read<ReportProvider>().setProject(item);
