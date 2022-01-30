@@ -4,17 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/src/provider.dart';
 
 class CityPicker extends StatefulWidget {
-  const CityPicker({Key? key, this.controller, this.onChanged, required this.setCity}) : super(key: key);
+  const CityPicker(
+      {Key? key,
+      this.controller,
+      this.onChanged,
+      required this.setCity,
+      this.enabled=true})
+      : super(key: key);
   final TextEditingController? controller;
   final void Function(String)? onChanged;
   final void Function(String) setCity;
+  final bool enabled;
 
   @override
   State<CityPicker> createState() => _CityPickerState();
 }
 
 class _CityPickerState extends State<CityPicker> {
-
   @override
   void initState() {
     super.initState();
@@ -29,13 +35,20 @@ class _CityPickerState extends State<CityPicker> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        if(widget.enabled==false){
+          return;
+        }
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) =>  CitySelect(setCity: widget.setCity,)),
+          MaterialPageRoute(
+              builder: (context) => CitySelect(
+                    setCity: widget.setCity,
+                  )),
         );
       },
       child: AbsorbPointer(
         child: TextField(
+          enabled: widget.enabled,
           controller: widget.controller,
           onChanged: widget.onChanged,
           decoration: const InputDecoration(
@@ -53,6 +66,7 @@ class _CityPickerState extends State<CityPicker> {
 class CitySelect extends StatefulWidget {
   const CitySelect({Key? key, required this.setCity}) : super(key: key);
   final void Function(String) setCity;
+
   @override
   State<CitySelect> createState() => _CitySelectState();
 }
@@ -96,7 +110,7 @@ class _CitySelectState extends State<CitySelect> {
                           ),
                         ),
                         padding: const EdgeInsets.only(top: 15, bottom: 15),
-                        child:  Text(item.value),
+                        child: Text(item.value),
                       ),
                     ),
                 ],

@@ -1,10 +1,35 @@
+import 'package:eco/providers/user_provider.dart';
 import 'package:eco/screens/auth/login.dart';
 import 'package:eco/widgets/city_picker.dart';
 import 'package:eco/widgets/text_input.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController dealController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController repeatPasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    nameController.dispose();
+    dealController.dispose();
+    cityController.dispose();
+    passwordController.dispose();
+    repeatPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +54,44 @@ class RegisterScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TextInput(
+                   TextInput(
+                    controller: emailController,
                     label: 'Email',
                   ),
-
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextInput(label: 'Вид деятельности'),
+                   TextInput(controller: nameController,label: 'ФИО'),
                   const SizedBox(
                     height: 10,
                   ),
-                  CityPicker(setCity: (_){}),
+                   TextInput(controller: dealController,label: 'Вид деятельности'),
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextInput(label: 'Пароль'),
+                  CityPicker(controller: cityController, setCity: (_) {
+                    cityController.text = _;
+                  }),
                   const SizedBox(
                     height: 10,
                   ),
-                  const TextInput(label: 'Повторите пароль'),
-                Expanded(child: Container()),
+                   TextInput(controller: passwordController,label: 'Пароль'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                   TextInput(controller: repeatPasswordController,label: 'Повторите пароль'),
+                  Expanded(child: Container()),
                   ElevatedButton(
-                      onPressed: () {}, child: const Text('Зарегистрироваться'))
+                      onPressed: () {
+                        context.read<UserProvider>().register(
+                          username: emailController.text,
+                          password: passwordController.text,
+                          busyness: dealController.text,
+                          name: nameController.text,
+                          city: cityController.text,
+                        );
+                      },
+                      child: const Text('Зарегистрироваться'))
                 ],
               ),
             ),

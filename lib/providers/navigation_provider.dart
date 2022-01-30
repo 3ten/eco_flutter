@@ -56,7 +56,7 @@ class NavigationProvider extends ChangeNotifier {
     scrollController: ScrollController(),
   );
 
-  Map<int, Screen> _screens = {
+  final Map<int, Screen> _screens = {
     FIRST_SCREEN: Screen(
       title: 'Чек-лист',
       icon: 'assets/icons/tab/checklist.svg',

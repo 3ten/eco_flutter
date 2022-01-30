@@ -17,15 +17,48 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController cityController = TextEditingController();
+  TextEditingController dealController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  late UserProvider setting;
+
+  @override
+  void initState() {
+    context.read<UserProvider>().getProfile();
+    setting = context.read<UserProvider>();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    nameController.dispose();
+    dealController.dispose();
+    cityController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var userProvider = context.watch<UserProvider>();
+    if (emailController.text != userProvider.user?.email) {
+      emailController.text = userProvider.user?.email ?? "";
+    }
+    if (nameController.text != userProvider.user?.name) {
+      nameController.text = userProvider.user?.name ?? "";
+    }
+    if (dealController.text != userProvider.user?.busyness) {
+      dealController.text = userProvider.user?.busyness ?? "";
+    }
+    if (cityController.text != userProvider.user?.city) {
+      cityController.text = userProvider.user?.city ?? "";
+    }
+
     FocusScopeNode currentFocus = FocusScope.of(context);
     String city = '';
     // final user = context.watch<UserProvider>();
     return Listener(
       onPointerDown: (_) {
+        print(currentFocus.focusedChild);
         if (!currentFocus.hasPrimaryFocus) {
           currentFocus.focusedChild?.unfocus();
         }
@@ -42,20 +75,29 @@ class _SettingScreenState extends State<SettingScreen> {
                     TextInput(
                       label: 'Email',
                       controller: emailController,
+                      onChanged: (value) {
+                        setting.setUser(email: value);
+                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     TextInput(
                       label: 'ФИО',
-                      controller: emailController,
+                      controller: nameController,
+                      onChanged: (value) {
+                        setting.setUser(name: value);
+                      },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     TextInput(
                       label: 'Вид деятельности',
-                      controller: emailController,
+                      onChanged: (value) {
+                        setting.setUser(busyness: value);
+                      },
+                      controller: dealController,
                     ),
                     const SizedBox(
                       height: 10,
@@ -65,15 +107,18 @@ class _SettingScreenState extends State<SettingScreen> {
                       setCity: (String value) {
                         setState(() {
                           cityController.text = value;
+                          setting.setUser(city: value);
                         });
                       },
                     ),
                     Expanded(child: Container()),
                     ElevatedButton(
                         onPressed: () {}, child: const Text('Сохранить')),
-                    ElevatedButton(onPressed: () {
-                      userProvider.logout();
-                    }, child: const Text('Выйти'))
+                    ElevatedButton(
+                        onPressed: () {
+                          userProvider.logout();
+                        },
+                        child: const Text('Выйти'))
                   ],
                 ),
               ),
