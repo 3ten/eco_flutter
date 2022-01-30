@@ -1,4 +1,5 @@
 import 'package:eco/providers/checklist_provider.dart';
+import 'package:eco/providers/info_provider.dart';
 import 'package:eco/providers/navigation_provider.dart';
 import 'package:eco/providers/report_provider.dart';
 import 'package:eco/providers/user_provider.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => InfoProvider()),
         ChangeNotifierProvider(create: (_) => CheckListProvider()),
         ChangeNotifierProvider(create: (_) => ReportProvider()),
       ],

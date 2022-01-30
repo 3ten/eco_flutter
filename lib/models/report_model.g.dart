@@ -15,7 +15,7 @@ ReportModel _$ReportModelFromJson(Map<String, dynamic> json) => ReportModel(
       dateEnd: json['date_end'] == null
           ? null
           : DateTime.parse(json['date_end'] as String),
-      status: json['status'] as String?,
+      status: json['status'] as String? ?? "draft",
       city: json['city'] as String?,
       address: json['address'] as String?,
       description: json['description'] == null
@@ -24,7 +24,7 @@ ReportModel _$ReportModelFromJson(Map<String, dynamic> json) => ReportModel(
       criteria: (json['criteria'] as List<dynamic>?)
           ?.map((e) => Criteria.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+    )..rating = json['rating'] as String?;
 
 Map<String, dynamic> _$ReportModelToJson(ReportModel instance) {
   final val = <String, dynamic>{};
@@ -44,5 +44,6 @@ Map<String, dynamic> _$ReportModelToJson(ReportModel instance) {
   writeNotNull('description', instance.description);
   writeNotNull('status', instance.status);
   writeNotNull('criteria', instance.criteria);
+  writeNotNull('rating', instance.rating);
   return val;
 }

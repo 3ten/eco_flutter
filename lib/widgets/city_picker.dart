@@ -48,6 +48,7 @@ class _CityPickerState extends State<CityPicker> {
       },
       child: AbsorbPointer(
         child: TextField(
+          readOnly: true,
           enabled: widget.enabled,
           controller: widget.controller,
           onChanged: widget.onChanged,
